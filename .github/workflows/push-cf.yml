@@ -20,32 +20,6 @@ jobs:
     name: Setup, Build, Publish, and Deploy
     runs-on: ubuntu-latest
     
-#     steps:
-#       - uses: actions/checkout@v2
-#       - name: Install IBM CLI
-#         run: |
-#           curl -fsSL https://clis.cloud.ibm.com/install/linux | sh
-#           ibmcloud --version
-#           ibmcloud config --check-version=false
-#         shell: bash
-#       - name: Install CF plugin
-#         run: ibmcloud cf install -f
-#         shell: bash
-#       - name: Log into IBM Cloud
-#         run: |
-#           ibmcloud login --apikey "$IBM_CLOUD_API" -r "$IBM_CLOUD_REGION" -g "$IBM_CLOUD_GROUP"
-#         shell: bash
-#       - name: Target CF
-#         run: ibmcloud target --cf-api https://api.$IBM_CLOUD_REGION.cf.cloud.ibm.com -r $IBM_CLOUD_REGION -o $IBM_CLOUD_ORG -s $IBM_CLOUD_SPACE
-#         shell: bash
-#       - name: List all applications
-#         run: ibmcloud cf apps
-#         shell: bash
-#       - name: Deploy manifest file
-#         run: ibmcloud cf push -f ./$MANIFEST_NAME
-#         shell: bash
-
-
     steps:
       - uses: actions/checkout@v2
       - name: Install IBM CLI
@@ -59,7 +33,7 @@ jobs:
         shell: bash
       - name: Log into IBM Cloud
         run: |
-          ibmcloud login --apikey "$IBM_CLOUD_API" -r $IBM_CLOUD_REGION
+          ibmcloud login --apikey "$IBM_CLOUD_API" -r "$IBM_CLOUD_REGION" -g "$IBM_CLOUD_GROUP"
         shell: bash
       - name: Target CF
         run: ibmcloud target --cf-api https://api.$IBM_CLOUD_REGION.cf.cloud.ibm.com -r $IBM_CLOUD_REGION -o $IBM_CLOUD_ORG -s $IBM_CLOUD_SPACE
@@ -70,3 +44,28 @@ jobs:
       - name: Deploy manifest file
         run: ibmcloud cf push -f ./$MANIFEST_NAME
         shell: bash
+
+#     steps:
+#       - uses: actions/checkout@v2
+#       - name: Install IBM CLI
+#         run: |
+#           curl -fsSL https://clis.cloud.ibm.com/install/linux | sh
+#           ibmcloud --version
+#           ibmcloud config --check-version=false
+#         shell: bash
+#       - name: Install CF plugin
+#         run: ibmcloud cf install -f
+#         shell: bash
+#       - name: Log into IBM Cloud
+#         run: |
+#           ibmcloud login --apikey "$IBM_CLOUD_API" -r $IBM_CLOUD_REGION
+#         shell: bash
+#       - name: Target CF
+#         run: ibmcloud target --cf-api https://api.$IBM_CLOUD_REGION.cf.cloud.ibm.com -r $IBM_CLOUD_REGION -o $IBM_CLOUD_ORG -s $IBM_CLOUD_SPACE
+#         shell: bash
+#       - name: List all applications
+#         run: ibmcloud cf apps
+#         shell: bash
+#       - name: Deploy manifest file
+#         run: ibmcloud cf push -f ./$MANIFEST_NAME
+#         shell: bash
