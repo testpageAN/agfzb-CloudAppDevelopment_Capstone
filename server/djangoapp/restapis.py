@@ -35,23 +35,6 @@ def get_request(url, api_key=False, **kwargs):
     return json_data
 
 
-# Create a `get_request` to make HTTP GET requests
-# e.g., response = requests.get(url, params=params, headers={'Content-Type': 'application/json'},
-#                                     auth=HTTPBasicAuth('apikey', api_key))
-# def get_request(url, **kwargs):
-#     print(kwargs)
-#     print("GET from {} ".format(url))
-#     try:
-#         # Call get method of requests library with URL and parameters
-#         response = requests.get(url, headers={'Content-Type': 'application/json'},
-#                                     params=kwargs)
-#     except:
-#         # If any error occurs
-#         print("Network exception occurred")
-#     status_code = response.status_code
-#     print("With status {} ".format(status_code))
-#     json_data = json.loads(response.text)
-#     return json_data
 
 #working up to 28/5
 # def get_request(url, **kwargs):    
@@ -393,7 +376,7 @@ def get_dealer_reviews_from_cf(url, **kwargs):
 
 def analyze_review_sentiments(text):
     url = "https://api.eu-gb.natural-language-understanding.watson.cloud.ibm.com/instances/237c022e-b459-4451-95a0-2565c33b3e1c"
-    api_key = ""
+    api_key = "Zq2n4zszwib0NghpDB0Iqg9FrR5f3m5123op_ohtu_hu"
     # api_key = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
     authenticator = IAMAuthenticator(api_key)
     natural_language_understanding = NaturalLanguageUnderstandingV1(version='2021-08-01',authenticator=authenticator)
