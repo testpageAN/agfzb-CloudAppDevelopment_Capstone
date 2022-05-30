@@ -84,18 +84,31 @@ def get_request(url, api_key=False, **kwargs):
 
 # Create a `post_request` to make HTTP POST requests
 # e.g., response = requests.post(url, params=kwargs, json=payload)
-def post_request(url, payload, **kwargs):
-    print(kwargs)
-    print("POST to {} ".format(url))
-    print(payload)
-    response = requests.post(url, params=kwargs, json=payload)
-    status_code = response.status_code
-    print("With status {} ".format(status_code))
-    json_data = json.loads(response.text)
-    return json_data
+#from the forum
+# def post_request(url, payload, **kwargs):
+#     print(kwargs)
+#     print("POST to {} ".format(url))
+#     print(payload)
+#     response = requests.post(url, params=kwargs, json=payload)
+#     status_code = response.status_code
+#     print("With status {} ".format(status_code))
+#     json_data = json.loads(response.text)
+#     return json_data
 
 
-
+# also from forum
+def post_request(url, json_payload, **kwargs):
+    json_data = json.dumps(json_payload, indent=4)
+    print(f"{json_data}")
+    try:
+        # Call get method of requests library with URL and parameters
+        response = requests.post(url, params=kwargs, json=json_data)
+    except Exception as e:
+        # If any error occurs
+        print("Network exception occurred")
+        print(f"Exception: {e}")
+    print(f"With status {response.status_code}")
+    print(f"Response: {response.text}")
 
 
 
@@ -381,6 +394,7 @@ def get_dealer_reviews_from_cf(url, **kwargs):
 def analyze_review_sentiments(text):
     url = "https://api.eu-gb.natural-language-understanding.watson.cloud.ibm.com/instances/237c022e-b459-4451-95a0-2565c33b3e1c"
     api_key = ""
+    # api_key = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
     authenticator = IAMAuthenticator(api_key)
     natural_language_understanding = NaturalLanguageUnderstandingV1(version='2021-08-01',authenticator=authenticator)
     natural_language_understanding.set_service_url(url)
