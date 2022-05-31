@@ -3,36 +3,54 @@ import json
 # import related models here
 from .models import CarDealer, DealerReview
 from requests.auth import HTTPBasicAuth
-############
 from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
 from ibm_watson import NaturalLanguageUnderstandingV1
 from ibm_watson.natural_language_understanding_v1 import Features,SentimentOptions
 import time
+####################################################################################################################################################
 
 #upadate 28/5
-def get_request(url, api_key=False, **kwargs):
-    print(f"GET from {url}")
-    if api_key:
-        # Basic authentication GET
-        try:
-            response = requests.get(url, headers={'Content-Type': 'application/json'},
-                                    params=kwargs, auth=HTTPBasicAuth('apikey', api_key))
-        except:
-            print("An error occurred while GET request. ")
-    else:
-        # No authentication GET
-        try:
-            response = requests.get(url, headers={'Content-Type': 'application/json'},
-                                    params=kwargs)
-        except:
-            print("An error occurred while GET request. ")
+# def get_request(url, api_key=False, **kwargs):
+#     print(f"GET from {url}")
+#     if api_key:
+#         # Basic authentication GET
+#         try:
+#             response = requests.get(url, headers={'Content-Type': 'application/json'},
+#                                     params=kwargs, auth=HTTPBasicAuth('apikey', api_key))
+#         except:
+#             print("An error occurred while GET request. ")
+#     else:
+#         # No authentication GET
+#         try:
+#             response = requests.get(url, headers={'Content-Type': 'application/json'},
+#                                     params=kwargs)
+#         except:
+#             print("An error occurred while GET request. ")
 
-    # Retrie response status code and content
+#     status_code = response.status_code
+#     print(f"Status {status_code}")
+#     json_data = json.loads(response.text)
+
+#     return json_data
+
+#update 31/5###############################################################################################
+def get_request(url, **kwargs):
+    print(kwargs)
+    print("GET from {} ".format(url))
+    try:
+        if "api_key" in kwargs:
+            response = requests.get(url, params=kwargs, headers={'Content-Type': 'application/json'},
+                                    auth=HTTPBasicAuth('apikey', kwargs['api_key']))
+        else:            
+            response = requests.get(url, params=kwargs, headers={'Content-Type': 'application/json'})
+    except:
+        print("An error occurred while GET request.")
     status_code = response.status_code
-    print(f"Status {status_code}")
+    print("Status {} ".format(status_code))
     json_data = json.loads(response.text)
 
     return json_data
+#############################################################################################################
 
 
 
@@ -63,7 +81,7 @@ def get_request(url, api_key=False, **kwargs):
 #     json_data = json.loads(response.text)
 #     return json_data
 
-
+####################################################################################################################################################################
 
 # Create a `post_request` to make HTTP POST requests
 # e.g., response = requests.post(url, params=kwargs, json=payload)
@@ -79,7 +97,7 @@ def get_request(url, api_key=False, **kwargs):
 #     return json_data
 
 
-# also from forum
+# also from forum####################################################################################################################################################
 def post_request(url, json_payload, **kwargs):
     json_data = json.dumps(json_payload, indent=4)
     print(f"{json_data}")
@@ -93,8 +111,7 @@ def post_request(url, json_payload, **kwargs):
     print(f"With status {response.status_code}")
     print(f"Response: {response.text}")
 
-
-
+######################################################################################################################################################################
 
 # Create a get_dealers_from_cf method to get dealers from a cloud function
 # def get_dealers_from_cf(url, **kwargs):
@@ -145,10 +162,7 @@ def get_dealers_from_cf(url, **kwargs):
             results.append(dealer_obj)
     return results
 
-
-
-
-
+#############################################################################################################################################################################
 
 
 
@@ -174,7 +188,7 @@ def get_dealer_by_id_from_cf(url, id):
 #                                 st=dealer["st"], zip=dealer["zip"])
 #     return dealer_obj
 
-# #test######################################################################
+
 # def get_dealer_by_id(url, id):
     
 #     # Call get_request with a URL parameter
@@ -233,10 +247,7 @@ def get_dealer_by_id_from_cf(url, id):
 #     return results
 
 
-
-
-
-
+#####################################################################################################################################################################
 def get_dealer_reviews_from_cf(url, **kwargs):
     results = []
     id = kwargs.get("id")
@@ -270,6 +281,8 @@ def get_dealer_reviews_from_cf(url, **kwargs):
             results.append(review_obj)
 
     return results
+
+########################################################################################################################################################################
 
 
 # Create a get_dealer_reviews_from_cf method to get reviews by dealer id from a cloud function
@@ -325,7 +338,7 @@ def get_dealer_reviews_from_cf(url, **kwargs):
 
 
 
-
+####################################################################################################################################################################
 
 # def get_dealer_reviews_from_cf(url, **kwargs):
 # def get_dealer_reviews_from_cf(url, id):
@@ -381,11 +394,30 @@ def analyze_review_sentiments(text):
     authenticator = IAMAuthenticator(api_key)
     natural_language_understanding = NaturalLanguageUnderstandingV1(version='2021-08-01',authenticator=authenticator)
     natural_language_understanding.set_service_url(url)
-    response = natural_language_understanding.analyze( text=text+"hello hello hello",features=Features(sentiment=SentimentOptions(targets=[text+"hello hello hello"]))).get_result()
+    response = natural_language_understanding.analyze( text=text,features=Features(sentiment=SentimentOptions(targets=[text]))).get_result()
     label=json.dumps(response, indent=2)
     label = response['sentiment']['document']['label']
-        
     return(label)
+
+
+#update 31/05###########################################################################################################################################
+# def analyze_review_sentiments(dealerreview, **kwargs):
+#     url = "https://api.eu-gb.natural-language-understanding.watson.cloud.ibm.com/instances/237c022e-b459-4451-95a0-2565c33b3e1c"
+#     api_key = ""
+#     # api_key = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+#     authenticator = IAMAuthenticator(apikey)
+#     natural_language_understanding = NaturalLanguageUnderstandingV1(version='2021-08-01', authenticator=authenticator)
+#     natural_language_understanding.set_service_url(url)
+#     response = natural_language_understanding.analyze(text=dealerreview,features=Features(sentiment=SentimentOptions())).get_result()
+    
+#     # - Get the returned sentiment label such as Positive or Negative
+#     #print(json.dumps(response, indent=2))
+#     print("setiment of review: ", response["sentiment"]["document"]["label"])
+#     sentiment = response["sentiment"]["document"]["label"]
+#     return sentiment
+####################################################################################################################################
+
+
 
 # def analyze_review_sentiments(review_text):
 #     # Watson NLU configuration
@@ -420,7 +452,7 @@ def analyze_review_sentiments(text):
     # return sentiment_label
 
 
-
+####################################################################################################################################################################
 
 
 #############################from the forum 
@@ -447,7 +479,7 @@ def analyze_review_sentiments(text):
 #     return(label)
 
 
-
+#############################################################################################################################################################
 
 # def get_dealers_from_cf(url, **kwargs):
 #     results = []
@@ -491,6 +523,10 @@ def analyze_review_sentiments(text):
 #     return dealer_obj
 
 
+
+
+##############################################################################################################################################################
+
 # def get_dealer_reviews_from_cf(url, **kwargs):
 #     results = []
 #     id = kwargs.get("id")
@@ -528,6 +564,9 @@ def analyze_review_sentiments(text):
 #     return results
 
 
+
+###############################################################################################################################################################
+
 # def get_request(url, **kwargs):
     
 #     # If argument contain API KEY
@@ -556,6 +595,9 @@ def analyze_review_sentiments(text):
 #     return json_data
 
 
+#############################################################################################################################################################
+
+
 # def post_request(url, payload, **kwargs):
 #     print(kwargs)
 #     print("POST to {} ".format(url))
@@ -567,7 +609,20 @@ def analyze_review_sentiments(text):
 #     return json_data
 
 
+#########ΠΡΟΣΟΧΗ ΣΤΟ dealerId##################################################################################################
+def get_dealer_details_from_cf(url, dealerId):
+    results = []
+    json_result = get_request(url+dealerId)
+    details = json_result["dealership"]
+    for doc in details:
+        results = CarDealer(
+            address=doc["address"], city=doc["city"], full_name=doc["full_name"],
+                                id=doc["id"], lat=doc["lat"], long=doc["long"],
+                                short_name=doc["short_name"],
+                                st=doc["st"], zip=doc["zip"])
 
+    return results
+#####################################################################################################################################
 
 
 

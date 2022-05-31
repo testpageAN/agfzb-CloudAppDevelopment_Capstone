@@ -17,6 +17,8 @@ import json
 logger = logging.getLogger(__name__)
 
 
+
+
 # Create your views here.
 
 # Create an `about` view to render a static about page
@@ -25,8 +27,8 @@ logger = logging.getLogger(__name__)
 def about(request):
     context = {}
     # djangoapp/templates/my_app/about.html
-    return render(request,'djangoapp/about.html', context)
-
+    if request.method == "GET":
+        return render(request,'djangoapp/about.html', context)
 
 
 # Create a `contact` view to return a static contact page
@@ -34,10 +36,8 @@ def about(request):
 def contact(request):
     context = {}
     # djangoapp/templates/my_app/contact.html
-    return render(request, 'djangoapp/contact.html', context)
-
-
-
+    if request.method == "GET":
+        return render(request, 'djangoapp/contact.html', context)
 
 
 # Update the `get_dealerships` view to render the index page with a list of dealerships
@@ -47,7 +47,10 @@ def get_dealerships(request):
         url = "https://e845b9da.eu-gb.apigw.appdomain.cloud/api/dealership"
         dealerships = get_dealers_from_cf(url)
         context["dealership_list"] = dealerships
+        #context["dealers"] = dealerships##############################
         return render(request, 'djangoapp/index.html', context)
+
+
 
 #ισως να βαλω το παραπανω αργοτερα
 # def get_dealerships(request):
@@ -94,15 +97,14 @@ def get_dealer_details(request, id):
     context = {}
     if request.method == "GET":
         url = 'https://e845b9da.eu-gb.apigw.appdomain.cloud/api/review'
+        urldealer = "https://e845b9da.eu-gb.apigw.appdomain.cloud/api/dealership?id=" #update 31/5##############
         reviews = get_dealer_reviews_from_cf(url, id=id)
         context = {
             "reviews":  reviews, 
-            "id": id
-        }
+            "id": detail
+        } #or "id"=id
 
         return render(request, 'djangoapp/dealer_details.html', context)
-
-
 
 
 
@@ -124,6 +126,7 @@ def get_dealer_details(request, id):
 #         return render(request, 'onlinecourse/user_login_bootstrap.html', context)
 
 def login_request(request):
+    context = {} #update 31/5#######################################################################
     if request.method == "POST":
         username = request.POST['username']
         password = request.POST['psw']
@@ -138,12 +141,12 @@ def login_request(request):
 
 
 
-
 # Create a `logout_request` view to handle sign out request
 # def logout_request(request):
 def logout_request(request):
     logout(request)
     return redirect('djangoapp:index')
+
 
 
 
@@ -172,17 +175,20 @@ def registration_request(request):
         if not user_exist:
             user = User.objects.create_user(username=username, first_name=first_name, last_name=last_name,
                                             password=password)
-            user.is_superuser = True
-            user.is_staff=True
+            user.is_superuser = True ################# τι εννοει;
+            user.is_staff=True #########################
             user.save()  
             login(request, user)
             return redirect("djangoapp:index")
         else:
             messages.warning(request, "The user already exists.")
             return redirect("djangoapp:registration")
-            # context['message'] = "User already exists."
-            # return render(request, 'djangoapp/registration.html', context)
+            # context['message'] = "User already exists."  ###############################
+            # return render(request, 'djangoapp/registration.html', context)  #################################
 
+
+    
+ 
 
             
             
@@ -275,12 +281,14 @@ def add_review(request, id):
     dealer_url = "https://e845b9da.eu-gb.apigw.appdomain.cloud/api/review"
     dealer = get_dealer_reviews_from_cf(dealer_url, id=id)
     context["dealer"] = dealer
+    # or context["detail"] = detail
+    #context["cars"] = CarModel.objects.all()  ####update 31/5
     if request.method == 'GET':
         # Get cars for the dealer
         cars = CarModel.objects.filter(id=id)
         context["cars"] = cars
         return render(request, 'djangoapp/add_review.html', context)
-    elif request.method == 'POST':
+    elif request.method == 'POST':   #####δεσ και το update 31/5 παρακατω
         if request.user.is_authenticated:
             username = request.user.username
             print(request.POST)
@@ -306,7 +314,28 @@ def add_review(request, id):
             post_request(review_post_url, new_payload, id=id)
         return redirect("djangoapp:dealer_details", id=id)
 
+        ###########update 31/5 χρειαζεται;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+        # car = get_object_or_404(CarModel, pk=request.POST["car"])
+        # review = {}
+        # review["name"] = request.user.username
+        # review["time"] = datetime.utcnow().isoformat()
+        # review["dealership"] = int(dealer_id)
+        # review["review"] = request.POST["content"]
+        # review["purchase"] = request.POST.get("purchasecheck", False)
+        # print("check value", review["purchase"])
+        # if review["purchase"]:
+        #     review["purchase"] = True
+        #     review["car_make"] = car.make_model.make
+        #     review["car_model"] = car.name
+        #     review["car_year"] = car.year.strftime("%Y")
+        #     review["purchase_date"] = request.POST["purchasedate"]
 
+        # json_payload = json.dumps(review)
+        # print(json_payload)
+        # url = "https://e845b9da.eu-gb.apigw.appdomain.cloud/api/review"
+        # post_request(url, json_payload)
+
+        # return redirect("djangoapp:dealer_details", dealer_id=dealer_id)
 
 
 
