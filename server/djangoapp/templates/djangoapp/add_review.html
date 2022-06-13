@@ -1,44 +1,57 @@
-{% extends 'base_template.html' %}
-{% block tilte %} Add Reviews {% endblock  %}
+{% extends 'base.html' %} {% block content %}
 
-{% block content %}
-<div class="container">
-    {% if user.is_authenticated %}
-    <h3>Add a review for {{ detail.full_name }}.</h3>
-    <form action="{% url 'djangoapp:add_review' detail.id %}" method="post">
-        {% csrf_token %}
-        <div class="form-group mt-2" >
-            <textarea class="form-control" id="content" name="content" rows="2" placeholder="Write your review" required></textarea>
-
-            <label for="purchasecheck"><b>Purchased from this dealership?</b></label>
-            <input class="ml-2 form-check-input" type="checkbox" name="purchasecheck" id="purchasecheck">
-            <br>
-            <div id="carmake" style="display:none;">
-                <span style="font-size:large;">Car make - model - year: </span>
-                    <select name="car" id="car" class="form-select m-2" required>
-                        {% for car in cars %}
-                            <option selected value={{car.id}}>{{ car.make_model.make }}-{{car.name}}-{{ car.year|date:"Y" }}</option>
-                        {% endfor %}
-                    </select>
-                <br>
-                    <p class="float-left m-2">Purchase date: </p>
-                <input class="date-own form-control w-25" type="date" name="purchasedate" id="purchasedate">
-            </div>
-            <hr>
-            <button type="submit" class="btn btn-primary m-2">Submit Review</button>
-        </div>
-    </form>
-    {% else %}
-        <div style="x-large">
-            Please login to review.
-        </div>
-    {% endif %}
-</div>
+<main class="container">
+  <h1>New review</h1>
+  <h4><i>for {{dealer.full_name}}</i></h4>
+  <br />
+  <!--review form -->
+  <form action="/djangoapp/dealer/{{dealer.id}}/add-review/" method="post">
+    {% csrf_token %}
+    <div class="form-group">
+      <label for="content"><b>Enter the review content:</b></label>
+      <textarea
+        class="form-control"
+        id="content"
+        name="content"
+        rows="2"
+        required
+      ></textarea>
+    </div>
+    <div class="form-group form-check">
+      <input
+        class="form-check-input"
+        type="checkbox"
+        name="purchasecheck"
+        id="purchasecheck"
+      />
+      <label for="purchasecheck">Did you purchase the car? </label>
+    </div>
+    <div class="form-group">
+      <label for="car">Select your car:</label>
+      <select name="car" id="car" class="form-select">
+        {% for car in cars %}
+        <option selected value="{{car.id}}">
+          {{car.car_make.name}} {{car.name}} {{ car.year }}
+        </option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="form-group" data-provide="datepicker">
+      <label for="purchasedate">Select your purchase date (mm/dd/yyyy):</label>
+      <input
+        class="date-own form-control"
+        type="text"
+        name="purchasedate"
+        id="purchasedate"
+      />
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </form>
+</main>
 <script type="text/javascript">
-    $(function () {
-        $('#purchasecheck').change(function () {                
-           $('#carmake').toggle(this.checked);
-        }).change(); //δες ορατοτητα state
-      });
+  $(".date-own").datepicker({
+    format: "mm/dd/yyyy",
+  });
 </script>
-{% endblock  %}
+
+{% endblock %}

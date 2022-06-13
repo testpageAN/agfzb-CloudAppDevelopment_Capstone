@@ -1,10 +1,16 @@
-{% extends 'base_template.html' %}
-
-{% block title %}About us{% endblock  %}
+{% extends 'base.html' %}
 
 {% block content %}
-<div class="container">      
-    <h1 class="cover-heading">Welcome to Best Cars</h1>
-    <p class="lead">home to the best cars in North America. We sell domestic and imported cars at reasonable prices.</p>
-</div>
-{% endblock  %}
+    <h1 class="skeleton-heading">About Us</h1>
+        <div class="p-4 justify-content-center">
+            <p>
+                Welcome to Best Cars dealership, home to the best cars in North America. We sell domestic and imported cars at reasonable prices.
+            </p>
+            </br>
+            <p>
+                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Debitis dolore dolores fugiat id labore molestias optio pariatur perferendis quam sit! Aut blanditiis explicabo perspiciatis quasi quis quos sint totam voluptate.
+            </p>
+            </br>
+            <p><a style="color:black; font-weight: bold;" href="{% url 'djangoapp:contact' %}">Contact us</a></p>
+    </div>    
+{% endblock %}
