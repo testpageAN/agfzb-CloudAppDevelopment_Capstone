@@ -5,7 +5,6 @@ from django.shortcuts import get_object_or_404, render, redirect
 from .models import CarModel
 from .restapis import get_dealer_by_id, get_dealers_from_cf, get_dealers_by_state, get_dealer_reviews_from_cf, post_request
 from django.contrib.auth import login, logout, authenticate
-from django.contrib import messages
 from datetime import datetime
 import logging
 import json
