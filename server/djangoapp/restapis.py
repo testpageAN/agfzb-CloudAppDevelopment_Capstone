@@ -8,7 +8,7 @@ from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
 from ibm_watson.natural_language_understanding_v1 import Features, SentimentOptions
 
 
-# Function for making HTTP GET requests
+# HTTP GET requests
 def get_request(url, api_key=False, **kwargs):
     print(f"GET from {url}")
     if api_key:
@@ -30,7 +30,7 @@ def get_request(url, api_key=False, **kwargs):
     json_data = json.loads(response.text)
     return json_data
 
-# Function for HTTP POST requests
+# HTTP POST requests
 def post_request(url, json_payload, **kwargs):
     print(f"POST to {url}")
     try:
@@ -41,7 +41,7 @@ def post_request(url, json_payload, **kwargs):
     print(f"Status {status_code}")
     return response
 
-# Gets all dealers from the CloudantDB with Cloud Function get-dealerships
+# Gets all dealers from the CloudantDB 
 def get_dealers_from_cf(url):
     results = []
     json_result = get_request(url)
@@ -56,12 +56,12 @@ def get_dealers_from_cf(url):
     return results
 
 
-# Gets single dealer from the CloudantDB with Function get-dealerships
+# Gets single dealer from the CloudantDB w
 def get_dealer_by_id(url, dealer_id):
     # Call get_request with the dealer_id parameter
     json_result = get_request(url, dealerId=dealer_id)
 
-    # Create a CarDealer object from response
+    # Create a CarDealer object from the response
     dealer = json_result["body"][0]
     dealer_obj = CarDealer(address=dealer["address"], city=dealer["city"], full_name=dealer["full_name"],
                            id=dealer["id"], lat=dealer["lat"], long=dealer["long"],
@@ -70,7 +70,7 @@ def get_dealer_by_id(url, dealer_id):
     return dealer_obj
 
 
-# Gets all dealers of the state from the CloudantDB with function get-dealerships
+# Gets all dealers of the state from the CloudantDB 
 def get_dealers_by_state(url, state):
     results = []
     json_result = get_request(url, state=state)
@@ -86,7 +86,7 @@ def get_dealers_by_state(url, state):
 
 def analyze_review_sentiments(text):
     url = "https://api.eu-gb.natural-language-understanding.watson.cloud.ibm.com/instances/237c022e-b459-4451-95a0-2565c33b3e1c"
-    api_key = "Zq2n4zszwib0NghpDB0Iqg9FrR5f3m5123op_ohtu_hu"
+    api_key = "mAeqbV1hMJQFTniGJmnIxxjEPz5pOyCWTuDPBQYwJHcS"
     authenticator = IAMAuthenticator(api_key)
     natural_language_understanding = NaturalLanguageUnderstandingV1(version='2021-08-01',authenticator=authenticator)
     natural_language_understanding.set_service_url(url)
@@ -98,7 +98,6 @@ def analyze_review_sentiments(text):
 
 
 # Gets all dealer reviews for a specified dealer from DB
-# Uses get_reviews
 def get_dealer_reviews_from_cf(url, dealer_id):
     results = []
     # GET request for the specified dealer id
